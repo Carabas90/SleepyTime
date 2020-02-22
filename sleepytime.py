@@ -63,6 +63,7 @@ def show_graph():
     plt.xlabel('Zeit in Stunden')
     plt.ylabel('Kummulierte Dosis')
     plt.ylim(bottom=0)
+    plt.title('Pharmakokinetik der Analgosedierung')
     plt.legend()
     plt.show()
 
