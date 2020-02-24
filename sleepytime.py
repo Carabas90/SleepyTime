@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-from tkinter import Tk, Label, Scale, IntVar, Button, Grid, Radiobutton
+from tkinter import Tk, Label, Scale, IntVar, Button, Grid, Radiobutton, Entry
 
 
 def serum_conc_calculator(t, q , influx):
@@ -71,6 +71,7 @@ def show_graph():
 def open_gui():
     """Creates a small GUI, which serves as an input for drawing graphs"""
     def calc():
+        """ Plots and shows the graphs from the users input in the GUI"""
         propdose = sclprop.get()
         midadose = sclmida.get()
         ketadose = sclketa.get()
@@ -112,8 +113,14 @@ def open_gui():
     radioprop2 = Radiobutton(root, text='mittel', variable=propvar, value=120, selectcolor='black')
     radioprop2.grid(row=1, column=4)
     radioprop3 = Radiobutton(root, text='lang', variable=propvar, value=200, selectcolor='black')
-    radioprop3. grid(row=1, column=5)
+    radioprop3.grid(row=1, column=5)
     radioprop1.select()
+
+    centryprop = Entry(root, width=5)
+    centryprop.grid(row=1, column=6)
+    centryprop.insert(1, '20')
+    centryproplbl = Label(root, text='mg/ml')
+    centryproplbl.grid(row=1, column=7)
 
     lblmida = Label(root, text='Midazolam   ')
     lblmida.grid(row=2, column=0, sticky='W')
@@ -133,6 +140,12 @@ def open_gui():
     radiomida3. grid(row=2, column=5)
     radiomida1.select()
 
+    centrymida = Entry(root, width=5)
+    centrymida.grid(row=2, column=6)
+    centrymida.insert(1, '2')
+    centrymidalbl = Label(root, text='mg/ml')
+    centrymidalbl.grid(row=2, column=7)
+
     lblketa = Label(root, text='Ketamin   ')
     lblketa.grid(row=3, column=0, sticky='W')
 
@@ -151,6 +164,12 @@ def open_gui():
     radioketa3. grid(row=3, column=5)
     radioketa1.select()
 
+    centryketa = Entry(root, width=5)
+    centryketa.grid(row=3, column=6)
+    centryketa.insert(1, '50')
+    centryketalbl = Label(root, text='mg/ml')
+    centryketalbl.grid(row=3, column=7)
+
     lblsufenta = Label(root, text='Sufentanil   ')
     lblsufenta.grid(row=4, column=0, sticky='W')
 
@@ -168,6 +187,12 @@ def open_gui():
     radiosufenta3 = Radiobutton(root, text='lang', variable=sufentavar, value=164, selectcolor='black')
     radiosufenta3.grid(row=4, column=5)
     radiosufenta1.select()
+
+    centrysufenta = Entry(root, width=5)
+    centrysufenta.grid(row=4, column=6)
+    centrysufenta.insert(1, '15')
+    centrysufentalbl = Label(root, text='µg/ml')
+    centrysufentalbl.grid(row=4, column=7)
 
     spacer2 = Label(root, text='')
     spacer2.grid(row=5)
