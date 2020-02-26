@@ -16,27 +16,27 @@ def med_dose(rate, hwz, ppb, sizefactor):
     while (sconc * ppf) > (komp2 / sizefactor):
         sconc -= 0.1
         komp2 += 0.1
-    med.append(round(sconc, 2))
+    med.append(round(sconc, 3))
     i = 2
     while med[-1] != med[-2]:
         sconc = (sconc + rate)*q
         while (sconc * ppf) > (komp2 / sizefactor):
             sconc -= 0.1
             komp2 += 0.1
-        med.append(round(sconc, 2))
+        med.append(round(sconc, 3))
         i += 1
 
     sconc = sconc*q
     while (sconc * ppf) < (komp2 / sizefactor):
         sconc += 0.1
         komp2 -= 0.1
-    med.append(round(sconc, 2))
+    med.append(round(sconc, 3))
     while sconc > 0.1:
         sconc = sconc*q
         while (sconc * ppf) < (komp2 / sizefactor):
             sconc += 0.1
             komp2 -= 0.1
-        med.append(round(sconc, 2))
+        med.append(round(sconc, 3))
     return med
 
 
