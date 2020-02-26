@@ -2,37 +2,41 @@ import matplotlib.pyplot as plt
 from tkinter import Tk, Label, Scale, IntVar, Button, Grid, Radiobutton, Entry
 
 
-def serum_conc_calculator(t, q , influx):
-    """Takes a timeframe (t, usually hours), a quotient (0<q>1), and the influx of a medication 
-        in mg/h and returns the serum concentration at the end of t"""
-    serum_conc = 0
-    for _ in range(t):
-        serum_conc = (serum_conc + influx)*q
-    return serum_conc 
-
-
-def breakdown(start_dose, q , t):
-    """ Takes the starting dose of a medication, a quotient (0<q>1), and a timeframe (t), and returns 
-        the remaining dose after t"""
-    remaining = start_dose *(q**t)
-    return remaining
-
-
-def med_dose(rate, hwz):
-    """Takes a influx rate (in mg/h) and the halflife of the medication (in minutes), and returns
+def med_dose(rate, hwz, ppb, sizefactor):
+    """Takes a influx rate (in mg/h), the halflife of the medication (in minutes), the percentage 
+        of substance binding to plasma proteins and a factor which respresents the size of the 
+        second kompartment (fatty tissue an musculature) in realtion to blood volume. Returns
         a list which represents the cummulation of the medication up until the point of maximum 
         cummulation, then the breakdown of the medication from this point on"""
     q = 1- ((0.5/hwz)*60) 
+    ppf = 1 - (ppb/100) #Factor of substance, which is not bound to Plasma-Proteins
     med = [0]
-    med.append(round(serum_conc_calculator(1, q, rate), 2))
+    komp2 = 0 #Represents the musculature and the fatty tissue in which the substance diffuses
+    sconc= rate*q
+    while (sconc * ppf) > (komp2 / sizefactor):
+        sconc -= 0.1
+        komp2 += 0.1
+    med.append(round(sconc, 2))
     i = 2
     while med[-1] != med[-2]:
-        med.append(round(serum_conc_calculator(i, q, rate), 2))
+        sconc = (sconc + rate)*q
+        while (sconc * ppf) > (komp2 / sizefactor):
+            sconc -= 0.1
+            komp2 += 0.1
+        med.append(round(sconc, 2))
         i += 1
 
-    med.append(round(breakdown(med[-1], q, 1), 2))
-    while med[-1] != med[-2]:
-        med.append(round(breakdown(med[-1], q, 1), 2))
+    sconc = sconc*q
+    while (sconc * ppf) < (komp2 / sizefactor):
+        sconc += 0.1
+        komp2 -= 0.1
+    med.append(round(sconc, 2))
+    while sconc > 0.1:
+        sconc = sconc*q
+        while (sconc * ppf) < (komp2 / sizefactor):
+            sconc += 0.1
+            komp2 -= 0.1
+        med.append(round(sconc, 2))
     return med
 
 
@@ -72,23 +76,23 @@ def open_gui():
     """Creates a small GUI, which serves as an input for drawing graphs"""
     def calc():
         """ Plots and shows the graphs from the users input in the GUI"""
-        propdose = sclprop.get()
-        midadose = sclmida.get()
-        ketadose = sclketa.get()
-        sufentadose = sclsufenta.get()
+        propdose = (sclprop.get() * int(centryprop.get()) /10)
+        midadose = (sclmida.get() * int(centrymida.get()))
+        ketadose = (sclketa.get() * int(centryketa.get()) / 10)
+        sufentadose = (sclsufenta.get() * int(centrysufenta.get()) / 10)
         propv = propvar.get()
         midav = midavar.get()
         ketav = ketavar.get()
         sufentav = sufentavar.get()
 
         if propdose != 0:
-            draw_graph(med_dose((propdose*20), propv), med_name='Propofol 1=1mg')
+            draw_graph(med_dose(propdose, propv, 98, 10), med_name='Propofol 1=10mg')
         if midadose != 0:
-            draw_graph(med_dose((midadose*2), midav), med_name='Midazolam 1=1mg')
+            draw_graph(med_dose(midadose, midav, 95, 10), med_name='Midazolam 1=1mg')
         if ketadose != 0:
-            draw_graph(med_dose((ketadose*5), ketav), med_name='Ketamin 1=10mg')
+            draw_graph(med_dose((ketadose), ketav, 47, 10), med_name='Ketamin 1=10mg')
         if sufentadose != 0:
-            draw_graph(med_dose((sufentadose*1.5), sufentav), med_name='Sufenta 1=10 Mikrogramm')
+            draw_graph(med_dose((sufentadose), sufentav, 92, 10), med_name='Sufenta 1=10 Mikrogramm')
         
         show_graph()
     
@@ -134,9 +138,9 @@ def open_gui():
     midavar = IntVar()
     radiomida1 = Radiobutton(root, text='kurz   ', variable=midavar, value=90, selectcolor='black')
     radiomida1.grid(row=2, column=3)
-    radiomida2 = Radiobutton(root, text='mittel', variable=midavar, value=360, selectcolor='black')
+    radiomida2 = Radiobutton(root, text='mittel', variable=midavar, value=345, selectcolor='black')
     radiomida2.grid(row=2, column=4)
-    radiomida3 = Radiobutton(root, text='lang', variable=midavar, value=630, selectcolor='black')
+    radiomida3 = Radiobutton(root, text='lang', variable=midavar, value=600, selectcolor='black')
     radiomida3. grid(row=2, column=5)
     radiomida1.select()
 
