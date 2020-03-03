@@ -13,29 +13,29 @@ def med_dose(rate, hwz, ppb, sizefactor):
     med = [0]
     komp2 = 0 #Represents the musculature and the fatty tissue in which the substance diffuses
     sconc= rate*q
-    while (sconc * ppf) > (komp2 / sizefactor):
-        sconc -= 0.1
-        komp2 += 0.1
+    if (sconc * ppf) > (komp2 / sizefactor):
+        sconc -= (sizefactor*ppf*sconc - komp2)/(sizefactor+1)
+        komp2 += (sizefactor*ppf*sconc - komp2)/(sizefactor+1)
     med.append(round(sconc, 3))
     i = 2
     while med[-1] != med[-2]:
         sconc = (sconc + rate)*q
-        while (sconc * ppf) > (komp2 / sizefactor):
-            sconc -= 0.1
-            komp2 += 0.1
+        if (sconc * ppf) > (komp2 / sizefactor):
+            sconc -= (sizefactor*ppf*sconc - komp2)/(sizefactor+1)
+            komp2 += (sizefactor*ppf*sconc - komp2)/(sizefactor+1)
         med.append(round(sconc, 3))
         i += 1
 
     sconc = sconc*q
-    while (sconc * ppf) < (komp2 / sizefactor):
-        sconc += 0.1
-        komp2 -= 0.1
+    if (sconc * ppf) < (komp2 / sizefactor):
+        sconc += (komp2- sizefactor*ppf*sconc)/(sizefactor+1)
+        komp2 -= (komp2- sizefactor*ppf*sconc)/(sizefactor+1)
     med.append(round(sconc, 3))
     while sconc > 0.1:
         sconc = sconc*q
-        while (sconc * ppf) < (komp2 / sizefactor):
-            sconc += 0.1
-            komp2 -= 0.1
+        if (sconc * ppf) < (komp2 / sizefactor):
+            sconc += (komp2- sizefactor*ppf*sconc)/(sizefactor+1)
+            komp2 -= (komp2- sizefactor*ppf*sconc)/(sizefactor+1)
         med.append(round(sconc, 3))
     return med
 
