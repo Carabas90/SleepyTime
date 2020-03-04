@@ -74,8 +74,38 @@ def show_graph():
 
 def open_gui():
     """Creates a small GUI, which serves as an input for drawing graphs"""
+    def get_sf():
+        """ Gets the inputs from the radiobuttons in the GUI and attributes them to a sizefactor for 
+            for the second kompartment (bodyfat and musculature). The values for bodyfat percentage
+            are taken from [wikipedia](https://de.wikipedia.org/wiki/K%C3%B6rperfettanteil). 
+            The percentages for blood (6.5% for women and 7.7% for men) and musculature 
+            (30.5% for women and 42.5% for men) are assumed static"""
+        s = sex.get()
+        f = bodyfat.get()
+        if s == 1:
+            if f == 1:
+                sf = 7.3
+            elif f == 2:
+                sf = 9.3
+            elif f == 3:
+                sf = 10.7
+            elif f == 4:
+                sf = 11.9
+        elif s == 2:
+            if f == 1:
+                sf = 6.6
+            elif f == 2:
+                sf = 8
+            elif f == 3:
+                sf = 9.1
+            elif f == 4:
+                sf = 10.1
+        
+        return sf
+            
     def calc():
         """ Plots and shows the graphs from the users input in the GUI"""
+        sf = get_sf()
         propdose = (sclprop.get() * int(centryprop.get()) /10)
         midadose = (sclmida.get() * int(centrymida.get()))
         ketadose = (sclketa.get() * int(centryketa.get()) / 10)
@@ -86,13 +116,13 @@ def open_gui():
         sufentav = sufentavar.get()
 
         if propdose != 0:
-            draw_graph(med_dose(propdose, propv, 98, 10), med_name='Propofol 1=10mg')
+            draw_graph(med_dose(propdose, propv, 98, sf), med_name='Propofol 1=10mg')
         if midadose != 0:
-            draw_graph(med_dose(midadose, midav, 95, 10), med_name='Midazolam 1=1mg')
+            draw_graph(med_dose(midadose, midav, 95, sf), med_name='Midazolam 1=1mg')
         if ketadose != 0:
-            draw_graph(med_dose((ketadose), ketav, 47, 10), med_name='Ketamin 1=10mg')
+            draw_graph(med_dose((ketadose), ketav, 47, sf), med_name='Ketamin 1=10mg')
         if sufentadose != 0:
-            draw_graph(med_dose((sufentadose), sufentav, 92, 10), med_name='Sufenta 1=10 Mikrogramm')
+            draw_graph(med_dose((sufentadose), sufentav, 92, sf), med_name='Sufenta 1=10 Mikrogramm')
         
         show_graph()
     
@@ -201,11 +231,36 @@ def open_gui():
     spacer2 = Label(root, text='')
     spacer2.grid(row=5)
 
-    calcbutton = Button(root, text='  Berechnen  ', command=calc)
-    calcbutton.grid(row=6, column=5)
+    sex = IntVar()
+    sexlabel = Label(root, text='Geschlecht:')
+    sexlabel.grid(row=6, column=0)
+    radiofem = Radiobutton(root, text='weiblich', variable=sex, value=1, selectcolor='black')
+    radiofem.grid(row=6, column=1)
+    radiomal = Radiobutton(root, text='männlich', variable=sex, value=2, selectcolor='black')
+    radiomal.grid(row=6, column=2)
+    radiofem.select()
+
+    bodyfat = IntVar()
+    bodyfatlabel = Label(root, text= 'Körperfettanteil:')
+    bodyfatlabel.grid(row=7, column=0)
+    radioslim = Radiobutton(root, text='untergewichtig', variable=bodyfat, value=1, selectcolor='black')
+    radioslim.grid(row=7, column=1)
+    radionorm = Radiobutton(root, text='normal', variable=bodyfat, value=2, selectcolor='black')
+    radionorm.grid(row=7, column=2)
+    radioow = Radiobutton(root, text='übergewichtig', variable=bodyfat, value=3, selectcolor='black')
+    radioow.grid(row=7, column=3)
+    radioadi = Radiobutton(root, text='adipös', variable=bodyfat, value=4, selectcolor='black')
+    radioadi.grid(row=7, column=4)
+    radionorm.select()
 
     spacer3 = Label(root, text='')
-    spacer3.grid(row=7, column=6)
+    spacer3.grid(row=8)
+    
+    calcbutton = Button(root, text='  Berechnen  ', command=calc)
+    calcbutton.grid(row=9, column=5)
+
+    spacer4 = Label(root, text='')
+    spacer4.grid(row=10, column=6)
 
     root.mainloop()
 

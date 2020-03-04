@@ -12,7 +12,7 @@ __Things i want to add in the future:__
 - [x] Entry Fields to adjust mg/ml
 - [x] Distribution an reabsoption of the substance into the tissue
 - [ ] Labels with the Dose at maximum cummulation and time until end of effect
-- [ ] Add Radiobuttons to dertermine the aproximate Bodyfat Percentage of Patient
+- [x] Add Radiobuttons to dertermine the aproximate Bodyfat Percentage of Patient
 
 
 ## Disclaimer:
